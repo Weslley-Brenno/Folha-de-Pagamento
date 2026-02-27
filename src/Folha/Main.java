@@ -81,7 +81,10 @@ public class Main {
                     horasExtras
             );
 
-            FolhaPagamento.gerarFolha(f, mesFolha, anoFolha, feriasNoMes);
+            ResultadoFolha resultado =
+                    FolhaPagamento.gerarFolha(f, mesFolha, anoFolha, feriasNoMes);
+
+            ImprimirFolha.imprimir(resultado);
 
             System.out.println("\nDeseja calcular outro funcionário?");
             System.out.println("1 - SIM");

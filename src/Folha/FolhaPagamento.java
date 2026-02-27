@@ -2,7 +2,9 @@ package Folha;
 
 public class FolhaPagamento {
 
-    public static void gerarFolha(Funcionario f, int mesFolha, int anoFolha, boolean feriasNoMes) {
+    public static ResultadoFolha gerarFolha(Funcionario f, int mesFolha, int anoFolha, boolean feriasNoMes) {
+
+        ResultadoFolha r = new ResultadoFolha();
 
         double salarioBase = f.getCargo().getSalarioBase();
 
@@ -38,25 +40,19 @@ public class FolhaPagamento {
 
         double liquido = bruto - inss - irrf;
 
-        System.out.println("\n===== FOLHA DE PAGAMENTO =====");
-        System.out.println("Funcionário: " + f.getNome());
-        System.out.println("Cargo: " + f.getCargo().getNome());
-        System.out.printf("Salário Base: R$ %.2f\n", salarioBase);
-        System.out.printf("Horas Extras: R$ %.2f\n", horasExtras);
+        // PREENCHIMENTO DO OBJETO RESULTADO
+        r.nome = f.getNome();
+        r.cargo = f.getCargo().getNome();
+        r.salarioBase = salarioBase;
+        r.horasExtras = horasExtras;
+        r.decimoTerceiro = decimoTerceiro;
+        r.ferias = ferias + adicionalFerias;
+        r.inss = inss;
+        r.irrf = irrf;
+        r.fgts = fgts;
+        r.bruto = bruto;
+        r.liquido = liquido;
 
-        if (decimoTerceiro > 0)
-            System.out.printf("13º Salário: R$ %.2f\n", decimoTerceiro);
-
-        if (feriasNoMes)
-            System.out.printf("Férias + 1/3: R$ %.2f\n", ferias + adicionalFerias);
-
-        System.out.println("\n--- IMPOSTOS ---");
-        System.out.printf("INSS: R$ %.2f\n", inss);
-        System.out.printf("IRRF: R$ %.2f\n", irrf);
-        System.out.printf("FGTS (informativo): R$ %.2f\n", fgts);
-
-        System.out.println("\n--- TOTAIS ---");
-        System.out.printf("TOTAL BRUTO: R$ %.2f\n", bruto);
-        System.out.printf("TOTAL LÍQUIDO: R$ %.2f\n", liquido);
+        return r;
     }
 }
