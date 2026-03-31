@@ -12,16 +12,16 @@ public class FolhaPagamento {
         double valorHora = salarioBase / 220;
         double horasExtras = f.getHorasExtras() * valorHora * 1.5;
 
-        // 13º SALÁRIO DIVIDIDO SOBRE 2 PARCELAS
+        // 13º SALÁRIO (duas parcelas)
         double decimoTerceiro = 0;
 
         if (mesFolha == 11) {
-            decimoTerceiro = salarioBase / 2; // 1ª parcela
+            decimoTerceiro = salarioBase / 2;
         } else if (mesFolha == 12) {
-            decimoTerceiro = salarioBase / 2; // 2ª parcela
+            decimoTerceiro = salarioBase / 2;
         }
 
-        // FÉRIAS (somente se tirar férias)
+        // FÉRIAS
         double ferias = 0;
         double adicionalFerias = 0;
 
@@ -30,17 +30,25 @@ public class FolhaPagamento {
             adicionalFerias = ferias / 3;
         }
 
-        // CALCULO DO SALARIO BRUTO TOTAL
+        // SALÁRIO BRUTO
         double bruto = salarioBase + horasExtras + decimoTerceiro + ferias + adicionalFerias;
 
-        // Impostos do mês
-        double inss = CalcularImposto.calcularINSS(bruto);
-        double irrf = CalcularImposto.calcularIRRF(bruto);
-        double fgts = CalcularImposto.calcularFGTS(bruto);
+        // Sistema de imposto
+        ImpostosPorAno impostos = ImpostoNovo.getImpostos(anoFolha);
 
+        double inss = impostos.getINSS().calcular(bruto);
+
+        double baseIRRF = bruto - inss;
+        if (baseIRRF < 0) {
+            baseIRRF = 0;
+        }
+        double irrf = impostos.getIRRF().calcular(baseIRRF);
+        double fgts = impostos.getFGTS().calcular(bruto);
+
+        // SALÁRIO LÍQUIDO
         double liquido = bruto - inss - irrf;
 
-        // PREENCHIMENTO DO OBJETO RESULTADO
+        // PREENCHIMENTO DO RESULTADO
         r.nome = f.getNome();
         r.cargo = f.getCargo().getNome();
         r.salarioBase = salarioBase;
